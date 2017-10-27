@@ -15,6 +15,8 @@
 		710905911F9E96EC00988557 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7109058F1F9E96EC00988557 /* Main.storyboard */; };
 		710905931F9E96EC00988557 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 710905921F9E96EC00988557 /* Assets.xcassets */; };
 		710905961F9E96EC00988557 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 710905941F9E96EC00988557 /* LaunchScreen.storyboard */; };
+		7109059E1FA3BD9D00988557 /* SpaceDust.sks in Resources */ = {isa = PBXBuildFile; fileRef = 7109059D1FA3BD9D00988557 /* SpaceDust.sks */; };
+		710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		710905921F9E96EC00988557 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		710905951F9E96EC00988557 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		710905971F9E96EC00988557 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7109059D1FA3BD9D00988557 /* SpaceDust.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SpaceDust.sks; sourceTree = "<group>"; };
+		7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneViewHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,17 +64,43 @@
 		710905841F9E96EC00988557 /* AsteroidAvoider */ = {
 			isa = PBXGroup;
 			children = (
+				710905A31FA3C16400988557 /* Model */,
+				710905A21FA3C15C00988557 /* Controller */,
+				710905A11FA3C15600988557 /* View */,
 				710905851F9E96EC00988557 /* AppDelegate.swift */,
-				710905871F9E96EC00988557 /* GameScene.sks */,
-				710905891F9E96EC00988557 /* Actions.sks */,
-				7109058B1F9E96EC00988557 /* GameScene.swift */,
-				7109058D1F9E96EC00988557 /* GameViewController.swift */,
 				7109058F1F9E96EC00988557 /* Main.storyboard */,
 				710905921F9E96EC00988557 /* Assets.xcassets */,
 				710905941F9E96EC00988557 /* LaunchScreen.storyboard */,
 				710905971F9E96EC00988557 /* Info.plist */,
 			);
 			path = AsteroidAvoider;
+			sourceTree = "<group>";
+		};
+		710905A11FA3C15600988557 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */,
+				710905891F9E96EC00988557 /* Actions.sks */,
+				7109059D1FA3BD9D00988557 /* SpaceDust.sks */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		710905A21FA3C15C00988557 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7109058B1F9E96EC00988557 /* GameScene.swift */,
+				7109058D1F9E96EC00988557 /* GameViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		710905A31FA3C16400988557 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				710905871F9E96EC00988557 /* GameScene.sks */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +166,7 @@
 				710905881F9E96EC00988557 /* GameScene.sks in Resources */,
 				710905931F9E96EC00988557 /* Assets.xcassets in Resources */,
 				710905961F9E96EC00988557 /* LaunchScreen.storyboard in Resources */,
+				7109059E1FA3BD9D00988557 /* SpaceDust.sks in Resources */,
 				7109058A1F9E96EC00988557 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,6 +181,7 @@
 				7109058C1F9E96EC00988557 /* GameScene.swift in Sources */,
 				7109058E1F9E96EC00988557 /* GameViewController.swift in Sources */,
 				710905861F9E96EC00988557 /* AppDelegate.swift in Sources */,
+				710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
