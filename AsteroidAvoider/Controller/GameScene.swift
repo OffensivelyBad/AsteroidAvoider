@@ -12,7 +12,7 @@ import CoreMotion
 
 class GameScene: SKScene {
     
-    let kMotionControls = false
+    let kMotionControls = true
     var touchingPlayer = false
     
     var viewHelper: GameSceneViewHelper?
@@ -20,6 +20,8 @@ class GameScene: SKScene {
     let motionManager = CMMotionManager()
     
     override func didMove(to view: SKView) {
+        
+        self.physicsWorld.contactDelegate = self
         
         // Add background, particles and player sprites
         self.viewHelper = GameSceneViewHelper(scene: self, player: self.player)
@@ -71,5 +73,37 @@ class GameScene: SKScene {
         
     }
     
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        guard let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node else { return }
+        
+        var firstNode: SKNode
+        var secondNode: SKNode
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstNode = nodeA
+            secondNode = nodeB
+        }
+        else {
+            firstNode = nodeB
+            secondNode = nodeA
+        }
+        
+        guard let firstBody = firstNode.physicsBody, let secondBody = secondNode.physicsBody else { return }
+        
+        switch (firstBody.categoryBitMask, secondBody.categoryBitMask) {
+        case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.Border):
+            self.viewHelper?.playerHit(secondNode)
+        case (PhysicsCategory.Enemy, PhysicsCategory.Border):
+            self.viewHelper?.enemyHit(firstNode)
+        default:
+            ()
+        }
+        
+    }
     
 }

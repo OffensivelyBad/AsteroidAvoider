@@ -17,6 +17,7 @@
 		710905961F9E96EC00988557 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 710905941F9E96EC00988557 /* LaunchScreen.storyboard */; };
 		7109059E1FA3BD9D00988557 /* SpaceDust.sks in Resources */ = {isa = PBXBuildFile; fileRef = 7109059D1FA3BD9D00988557 /* SpaceDust.sks */; };
 		710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */; };
+		71894A5A1FA7835400C9C79A /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71894A591FA7835400C9C79A /* PhysicsCategory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		710905971F9E96EC00988557 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7109059D1FA3BD9D00988557 /* SpaceDust.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SpaceDust.sks; sourceTree = "<group>"; };
 		7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneViewHelper.swift; sourceTree = "<group>"; };
+		71894A591FA7835400C9C79A /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				710905871F9E96EC00988557 /* GameScene.sks */,
+				71894A591FA7835400C9C79A /* PhysicsCategory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -180,6 +183,7 @@
 			files = (
 				7109058C1F9E96EC00988557 /* GameScene.swift in Sources */,
 				7109058E1F9E96EC00988557 /* GameViewController.swift in Sources */,
+				71894A5A1FA7835400C9C79A /* PhysicsCategory.swift in Sources */,
 				710905861F9E96EC00988557 /* AppDelegate.swift in Sources */,
 				710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */,
 			);
