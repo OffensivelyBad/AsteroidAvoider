@@ -12,8 +12,7 @@ import CoreMotion
 
 class GameScene: SKScene {
     
-    let kMotionControls = true
-    var touchingPlayer = false
+    let kMotionControls = false
     
     var viewHelper: GameSceneViewHelper?
     let player = SKSpriteNode(imageNamed: "player-rocket.png")
@@ -40,28 +39,16 @@ class GameScene: SKScene {
         self.viewHelper = nil
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Implement touch controls if motion controls are off
-        if !self.kMotionControls {
-            guard let touch = touches.first else { return }
-            let location = touch.location(in: self)
-            let tappedNodes = self.nodes(at: location)
-            if tappedNodes.contains(self.player) {
-                self.touchingPlayer = true
-            }
-        }
-    }
-    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !self.kMotionControls {
-            guard self.touchingPlayer, let touch = touches.first else { return }
-            let location = touch.location(in: self)
-            self.player.position = location
+            guard let touch = touches.first else { return }
+            let startLocation = touch.previousLocation(in: self)
+            let endLocation = touch.location(in: self)
+            let changeX = startLocation.x - endLocation.x
+            let changeY = startLocation.y - endLocation.y
+            self.player.position.x -= changeX
+            self.player.position.y -= changeY
         }
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.touchingPlayer = false
     }
     
     override func update(_ currentTime: TimeInterval) {
