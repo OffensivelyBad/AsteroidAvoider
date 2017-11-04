@@ -30,18 +30,24 @@ class GameSceneViewHelper {
         // Turn off gravity
         self.scene.physicsWorld.gravity = CGVector.zero
         
-        // Create a border around the screen
+        // Create a border around the screen that will destroy the enemies when they leave the screen
         let enemyNode = SKSpriteNode(imageNamed: "asteroid")
-        //TODO: make this border accurate
-        let enemyWidthOrHeight: CGFloat = max(enemyNode.size.width, enemyNode.size.height)
-        let halfScreenHeight: CGFloat = self.scene.size.height / 2
-        let halfScreenWidth: CGFloat = self.scene.size.width / 2
-        let borderFrame = CGRect(x: -halfScreenWidth - enemyWidthOrHeight, y: -halfScreenHeight - enemyWidthOrHeight, width: (halfScreenWidth * 2) + (enemyWidthOrHeight * 3), height: (halfScreenHeight * 2) + (enemyWidthOrHeight * 2))
-        let borderBody = SKPhysicsBody(edgeLoopFrom: borderFrame)
-        borderBody.friction = 0
-        borderBody.categoryBitMask = PhysicsCategory.Border
-        borderBody.contactTestBitMask = PhysicsCategory.Enemy | PhysicsCategory.Player
+        let enemyWidthOrHeight = max(enemyNode.size.width, enemyNode.size.height)
+        let borderBody = createBorderForWidth(enemyWidthOrHeight)
+        borderBody.categoryBitMask = PhysicsCategory.EnemyBorder
+        borderBody.contactTestBitMask = PhysicsCategory.Enemy
+        borderBody.collisionBitMask = PhysicsCategory.Enemy
         self.scene.physicsBody = borderBody
+        
+        // Create a border around the screen that will prevent the player from moving out of view
+        let playerWidthOrHeight = max(self.player.size.width, self.player.size.height) / 2
+        let playerBorder = createBorderForWidth(playerWidthOrHeight)
+        playerBorder.categoryBitMask = PhysicsCategory.PlayerBorder
+        playerBorder.contactTestBitMask = PhysicsCategory.Player
+        playerBorder.collisionBitMask = PhysicsCategory.Player
+        let playerBorderNode = SKNode()
+        playerBorderNode.physicsBody = playerBorder
+        self.scene.addChild(playerBorderNode)
         
         // Create a background
         let background = SKSpriteNode(imageNamed: "space.jpg")
@@ -81,10 +87,22 @@ class GameSceneViewHelper {
         
     }
     
+    func createBorderForWidth(_ width: CGFloat) -> SKPhysicsBody {
+        
+        let halfScreenHeight: CGFloat = self.scene.size.height / 2
+        let halfScreenWidth: CGFloat = self.scene.size.width / 2
+        let borderFrame = CGRect(x: -halfScreenWidth - width, y: -halfScreenHeight - width, width: (halfScreenWidth * 2) + (width * 3), height: (halfScreenHeight * 2) + (width * 2))
+        let borderBody = SKPhysicsBody(edgeLoopFrom: borderFrame)
+        borderBody.friction = 0
+        return borderBody
+        
+    }
+    
     func createPlayer() {
         self.player.physicsBody = SKPhysicsBody(texture: self.player.texture!, size: self.player.size)
         self.player.physicsBody?.usesPreciseCollisionDetection = true
         self.player.physicsBody?.categoryBitMask = PhysicsCategory.Player
+        self.player.physicsBody?.collisionBitMask = PhysicsCategory.Enemy | PhysicsCategory.PlayerBorder
         self.player.physicsBody?.density = 1
         self.player.physicsBody?.contactTestBitMask = PhysicsCategory.Enemy
         self.player.position.x = (-self.scene.size.width / 2) + self.player.size.width
@@ -128,6 +146,7 @@ class GameSceneViewHelper {
         let spriteSize = max(enemySprite.size.width, enemySprite.size.height)
         enemySprite.physicsBody = SKPhysicsBody(circleOfRadius: spriteSize * scale)
         enemySprite.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        enemySprite.physicsBody?.collisionBitMask = PhysicsCategory.Player
         enemySprite.physicsBody?.velocity = CGVector(dx: CGFloat(-abs(randomDistribution.nextInt())), dy: 0)
         enemySprite.physicsBody?.density = 1
         enemySprite.physicsBody?.linearDamping = 0
@@ -152,7 +171,7 @@ class GameSceneViewHelper {
             self.player.run(SKAction.sequence([velocityAction, SKAction.wait(forDuration: 1), SKAction.removeFromParent()]))
             self.playerWasHit = true
         }
-        else if node.physicsBody?.categoryBitMask == PhysicsCategory.Border && self.playerWasHit {
+        else if node.physicsBody?.categoryBitMask == PhysicsCategory.PlayerBorder && self.playerWasHit {
             // The player was hit by an enemy and should then bounce off of any walls that were hit
             let playerVelocity = self.player.physicsBody?.velocity ?? CGVector.zero
             let velocity = CGVector(dx: playerVelocity.dx * -0.1, dy: playerVelocity.dy * -0.1)

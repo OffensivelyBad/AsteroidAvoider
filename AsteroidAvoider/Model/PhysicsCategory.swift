@@ -11,5 +11,6 @@ import Foundation
 struct PhysicsCategory {
     static let Player: UInt32 = 0x1 << 0
     static let Enemy: UInt32 = 0x1 << 1
-    static let Border: UInt32 = 0x1 << 2
+    static let EnemyBorder: UInt32 = 0x1 << 2
+    static let PlayerBorder: UInt32 = 0x1 << 3
 }

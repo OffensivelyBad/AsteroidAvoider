@@ -96,9 +96,9 @@ extension GameScene: SKPhysicsContactDelegate {
         guard let firstBody = firstNode.physicsBody, let secondBody = secondNode.physicsBody else { return }
         
         switch (firstBody.categoryBitMask, secondBody.categoryBitMask) {
-        case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.Border):
+        case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.PlayerBorder):
             self.viewHelper?.playerHit(secondNode)
-        case (PhysicsCategory.Enemy, PhysicsCategory.Border):
+        case (PhysicsCategory.Enemy, PhysicsCategory.EnemyBorder):
             self.viewHelper?.enemyHit(firstNode)
         default:
             ()
