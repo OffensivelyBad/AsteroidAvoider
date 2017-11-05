@@ -20,12 +20,33 @@ class GameSceneViewHelper {
     var gameTimer: Timer?
     var playerWasHit = false
     
+    // Scoring
+    let scoreLabel = SKLabelNode(fontNamed: "AvenirNextCondensed-Bold")
+    var score = 0 {
+        didSet {
+            self.scoreLabel.text = "SCORE: \(score)"
+        }
+    }
+    
+    // Sizes
+    var playerWidthOrHeight: CGFloat {
+        return max(self.player.size.width, self.player.size.height)
+    }
+    
     init(scene: SKScene, player: SKSpriteNode) {
         self.scene = scene
         self.player = player
     }
     
+}
+
+// MARK: - Create nodes
+extension GameSceneViewHelper {
+    
     func setupScene() {
+        
+        // Setup scoring
+        setupScoring()
         
         // Turn off gravity
         self.scene.physicsWorld.gravity = CGVector.zero
@@ -40,8 +61,7 @@ class GameSceneViewHelper {
         self.scene.physicsBody = borderBody
         
         // Create a border around the screen that will prevent the player from moving out of view
-        let playerWidthOrHeight = max(self.player.size.width, self.player.size.height) / 2
-        let playerBorder = createBorderForWidth(playerWidthOrHeight)
+        let playerBorder = createBorderForWidth(self.playerWidthOrHeight)
         playerBorder.categoryBitMask = PhysicsCategory.PlayerBorder
         playerBorder.contactTestBitMask = PhysicsCategory.Player
         playerBorder.collisionBitMask = PhysicsCategory.Player
@@ -65,7 +85,7 @@ class GameSceneViewHelper {
         createPlayer()
         
         // Create the asteroids
-        self.gameTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameSceneViewHelper.createEnemy), userInfo: nil, repeats: true)
+        self.gameTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameSceneViewHelper.createGameNodes), userInfo: nil, repeats: true)
         
         // Add test nodes
         if self.testing {
@@ -110,15 +130,12 @@ class GameSceneViewHelper {
         self.scene.addChild(self.player)
     }
     
-    func movePlayerFromAccelerometerData(_ data: CMAccelerometerData) {
-        // X and Y are flipped because we're in landscape
-        let changeX = CGFloat(data.acceleration.y) * 10
-        let changeY = CGFloat(data.acceleration.x) * 10
-        self.player.position.x -= changeX
-        self.player.position.y += changeY
+    @objc func createGameNodes() {
+        createEnemy()
+        createEnergy()
     }
     
-    @objc func createEnemy() {
+    func createEnemy() {
         
         let screenHeight = self.scene.size.height / 2
         let screenWidth = self.scene.size.width / 2
@@ -130,7 +147,7 @@ class GameSceneViewHelper {
         // Get a position for the enemy
         var candidatePosition: CGPoint?
         for _ in 0..<10 {
-            // Prevent enemies from being added on top of other enemies
+            // Prevent enemies from being added on top of other nodes
             let testPoint = CGPoint(x: screenWidth + enemySprite.size.width, y: CGFloat(randomDistribution.nextInt()))
             if locationIsEmpty(testPoint) {
                 candidatePosition = testPoint
@@ -143,8 +160,8 @@ class GameSceneViewHelper {
         enemySprite.position = candidatePosition!
         enemySprite.zPosition = 1
         enemySprite.setScale(scale)
-        let spriteSize = max(enemySprite.size.width, enemySprite.size.height)
-        enemySprite.physicsBody = SKPhysicsBody(circleOfRadius: spriteSize * scale)
+        //let spriteSize = max(enemySprite.size.width, enemySprite.size.height)
+        enemySprite.physicsBody = SKPhysicsBody(texture: enemySprite.texture ?? SKTexture(), size: enemySprite.size) // SKPhysicsBody(circleOfRadius: spriteSize * scale)
         enemySprite.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
         enemySprite.physicsBody?.collisionBitMask = PhysicsCategory.Player
         enemySprite.physicsBody?.velocity = CGVector(dx: CGFloat(-abs(randomDistribution.nextInt())), dy: 0)
@@ -154,12 +171,57 @@ class GameSceneViewHelper {
         
     }
     
+    func createEnergy() {
+        
+        let screenHeight = self.scene.size.height / 2
+        let screenWidth = self.scene.size.width / 2
+        let randomDistribution = GKRandomDistribution(lowestValue: Int(-screenHeight), highestValue: Int(screenHeight))
+        
+        let energySprite = SKSpriteNode(imageNamed: "energy")
+        
+        // Get a position for the energy
+        var candidatePosition: CGPoint?
+        for _ in 0..<10 {
+            // Prevent energy from being added on top of other nodes
+            let testPoint = CGPoint(x: screenWidth + energySprite.size.width, y: CGFloat(randomDistribution.nextInt()))
+            if locationIsEmpty(testPoint) {
+                candidatePosition = testPoint
+                break
+            }
+        }
+        
+        guard candidatePosition != nil else { return }
+        energySprite.position = candidatePosition!
+        energySprite.zPosition = 1
+        energySprite.physicsBody = SKPhysicsBody(texture: energySprite.texture ?? SKTexture(), size: energySprite.size)
+        energySprite.physicsBody?.categoryBitMask = PhysicsCategory.Energy
+        energySprite.physicsBody?.collisionBitMask = 0
+        energySprite.physicsBody?.contactTestBitMask = PhysicsCategory.Player
+        energySprite.physicsBody?.velocity = CGVector(dx: CGFloat(-abs(randomDistribution.nextInt())), dy: 0)
+        energySprite.physicsBody?.linearDamping = 0
+        self.scene.addChild(energySprite)
+        
+    }
+    
     func locationIsEmpty(_ point: CGPoint) -> Bool {
         let nodes = self.scene.nodes(at: point)
-        if let node = nodes.first, node.physicsBody?.categoryBitMask == PhysicsCategory.Enemy {
+        if let node = nodes.first, node.physicsBody?.categoryBitMask == PhysicsCategory.Enemy || node.physicsBody?.categoryBitMask == PhysicsCategory.Energy {
             return false
         }
         return true
+    }
+    
+}
+
+// MARK: - Movement and collisions
+extension GameSceneViewHelper {
+    
+    func movePlayerFromAccelerometerData(_ data: CMAccelerometerData) {
+        // X and Y are flipped because we're in landscape
+        let changeX = CGFloat(data.acceleration.y) * 10
+        let changeY = CGFloat(data.acceleration.x) * 10
+        self.player.position.x -= changeX
+        self.player.position.y += changeY
     }
     
     func playerHit(_ node: SKNode) {
@@ -177,11 +239,29 @@ class GameSceneViewHelper {
             let velocity = CGVector(dx: playerVelocity.dx * -0.1, dy: playerVelocity.dy * -0.1)
             self.player.physicsBody?.applyImpulse(velocity)
         }
+        else if node.physicsBody?.categoryBitMask == PhysicsCategory.Energy {
+            self.score += 1
+            node.removeFromParent()
+        }
     }
     
     func enemyHit(_ node: SKNode) {
         // Remove asteroids that hit the border of the scene
         node.removeFromParent()
+    }
+    
+}
+
+// MARK: - Scoring
+extension GameSceneViewHelper {
+    
+    func setupScoring() {
+        
+        self.scoreLabel.zPosition = 10
+        self.scoreLabel.position.y = self.scene.size.height / 3
+        self.scene.addChild(self.scoreLabel)
+        self.score = 0
+        
     }
     
 }

@@ -13,4 +13,5 @@ struct PhysicsCategory {
     static let Enemy: UInt32 = 0x1 << 1
     static let EnemyBorder: UInt32 = 0x1 << 2
     static let PlayerBorder: UInt32 = 0x1 << 3
+    static let Energy: UInt32 = 0x1 << 4
 }

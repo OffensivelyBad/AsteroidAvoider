@@ -39,27 +39,6 @@ class GameScene: SKScene {
         self.viewHelper = nil
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if !self.kMotionControls {
-            guard let touch = touches.first else { return }
-            let startLocation = touch.previousLocation(in: self)
-            let endLocation = touch.location(in: self)
-            let changeX = startLocation.x - endLocation.x
-            let changeY = startLocation.y - endLocation.y
-            self.player.position.x -= changeX
-            self.player.position.y -= changeY
-        }
-    }
-    
-    override func update(_ currentTime: TimeInterval) {
-        
-        // If using motion controls, update the player position based on the gyroscope
-        if let accelerometerData = self.motionManager.accelerometerData, self.kMotionControls {
-            self.viewHelper?.movePlayerFromAccelerometerData(accelerometerData)
-        }
-        
-    }
-    
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -83,12 +62,38 @@ extension GameScene: SKPhysicsContactDelegate {
         guard let firstBody = firstNode.physicsBody, let secondBody = secondNode.physicsBody else { return }
         
         switch (firstBody.categoryBitMask, secondBody.categoryBitMask) {
-        case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.PlayerBorder):
+        case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.PlayerBorder), (PhysicsCategory.Player, PhysicsCategory.Energy):
             self.viewHelper?.playerHit(secondNode)
         case (PhysicsCategory.Enemy, PhysicsCategory.EnemyBorder):
             self.viewHelper?.enemyHit(firstNode)
         default:
             ()
+        }
+        
+    }
+    
+}
+
+// MARK: - Movement and touches
+extension GameScene {
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !self.kMotionControls {
+            guard let touch = touches.first else { return }
+            let startLocation = touch.previousLocation(in: self)
+            let endLocation = touch.location(in: self)
+            let changeX = startLocation.x - endLocation.x
+            let changeY = startLocation.y - endLocation.y
+            self.player.position.x -= changeX
+            self.player.position.y -= changeY
+        }
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        
+        // If using motion controls, update the player position based on the gyroscope
+        if let accelerometerData = self.motionManager.accelerometerData, self.kMotionControls {
+            self.viewHelper?.movePlayerFromAccelerometerData(accelerometerData)
         }
         
     }
