@@ -64,7 +64,7 @@ extension GameScene: SKPhysicsContactDelegate {
         switch (firstBody.categoryBitMask, secondBody.categoryBitMask) {
         case (PhysicsCategory.Player, PhysicsCategory.Enemy), (PhysicsCategory.Player, PhysicsCategory.PlayerBorder), (PhysicsCategory.Player, PhysicsCategory.Energy):
             self.viewHelper?.playerHit(secondNode)
-        case (PhysicsCategory.Enemy, PhysicsCategory.EnemyBorder):
+        case (PhysicsCategory.Enemy, PhysicsCategory.EnemyBorder), (PhysicsCategory.Energy, PhysicsCategory.EnemyBorder):
             self.viewHelper?.enemyHit(firstNode)
         default:
             ()
@@ -90,6 +90,9 @@ extension GameScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
+        
+        // Follow the player with the camera when the player was hit
+        self.viewHelper?.updateCameraPosition()
         
         // If using motion controls, update the player position based on the gyroscope
         if let accelerometerData = self.motionManager.accelerometerData, self.kMotionControls {

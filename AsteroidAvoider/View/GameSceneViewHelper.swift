@@ -19,6 +19,13 @@ class GameSceneViewHelper {
     let player: SKSpriteNode
     var gameTimer: Timer?
     var playerWasHit = false
+    var cameraShouldFollowPlayer = false
+    
+    // Camera
+    var camera: SKCameraNode?
+    
+    // Sounds
+    let musicNode = SKAudioNode(fileNamed: "cyborg-ninja.mp3")
     
     // Scoring
     let scoreLabel = SKLabelNode(fontNamed: "AvenirNextCondensed-Bold")
@@ -45,8 +52,18 @@ extension GameSceneViewHelper {
     
     func setupScene() {
         
+        // Setup the camera
+        self.camera = SKCameraNode()
+        self.scene.camera = self.camera
+        if let cam = self.camera {
+            self.scene.addChild(cam)
+        }
+        
         // Setup scoring
         setupScoring()
+        
+        // Begin playing music
+        self.scene.addChild(self.musicNode)
         
         // Turn off gravity
         self.scene.physicsWorld.gravity = CGVector.zero
@@ -56,8 +73,8 @@ extension GameSceneViewHelper {
         let enemyWidthOrHeight = max(enemyNode.size.width, enemyNode.size.height)
         let borderBody = createBorderForWidth(enemyWidthOrHeight)
         borderBody.categoryBitMask = PhysicsCategory.EnemyBorder
-        borderBody.contactTestBitMask = PhysicsCategory.Enemy
-        borderBody.collisionBitMask = PhysicsCategory.Enemy
+        borderBody.contactTestBitMask = PhysicsCategory.Enemy | PhysicsCategory.Energy
+        borderBody.collisionBitMask = PhysicsCategory.Enemy | PhysicsCategory.Energy
         self.scene.physicsBody = borderBody
         
         // Create a border around the screen that will prevent the player from moving out of view
@@ -225,12 +242,31 @@ extension GameSceneViewHelper {
     }
     
     func playerHit(_ node: SKNode) {
-        if node.physicsBody?.categoryBitMask == PhysicsCategory.Enemy {
+        if node.physicsBody?.categoryBitMask == PhysicsCategory.Enemy && !self.playerWasHit {
+            
+            // Stop the music
+            self.musicNode.removeFromParent()
+            
+            // Zoom the camera on the player
+            zoomCameraOnPlayer()
+            
             // Player hit an enemy; make it bounce off the enemy and then get removed from the screen
             let nodeVelocity = node.physicsBody?.velocity ?? CGVector.zero
             let velocity = CGVector(dx: nodeVelocity.dx, dy: nodeVelocity.dy)
             let velocityAction = SKAction.applyImpulse(velocity, duration: 0.001)
-            self.player.run(SKAction.sequence([velocityAction, SKAction.wait(forDuration: 1), SKAction.removeFromParent()]))
+            let playDeathSound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
+            let explosion = SKAction.run {
+                if let particles = SKEmitterNode(fileNamed: "Explosion.sks") {
+                    particles.position = self.player.position
+                    particles.zPosition = 2
+                    self.scene.addChild(particles)
+                    self.player.removeFromParent()
+                }
+            }
+            let gameOverBlock = SKAction.run {
+                self.showGameOver()
+            }
+            self.player.run(SKAction.sequence([velocityAction, SKAction.wait(forDuration: 1), explosion, playDeathSound, gameOverBlock]))
             self.playerWasHit = true
         }
         else if node.physicsBody?.categoryBitMask == PhysicsCategory.PlayerBorder && self.playerWasHit {
@@ -262,6 +298,55 @@ extension GameSceneViewHelper {
         self.scene.addChild(self.scoreLabel)
         self.score = 0
         
+    }
+    
+    func showGameOver() {
+        
+        // Remove the now zoomed score label
+        self.scoreLabel.removeFromParent()
+        
+        // Create a game over sprite
+        let gameOver = SKSpriteNode(imageNamed: "gameOver-1")
+        gameOver.zPosition = 10
+        gameOver.setScale(0.001)
+        self.scene.camera?.addChild(gameOver)
+        
+        let scoreBlock = SKAction.run {
+            // Create a new score label
+            let newScore = SKLabelNode(fontNamed: "AvenirNextCondensed-Bold")
+            newScore.text = "Score: \(self.score)"
+            newScore.position = CGPoint(x: 0, y: -gameOver.size.height)
+            newScore.zPosition = 10
+            self.scene.camera?.addChild(newScore)
+        }
+        
+        gameOver.run(SKAction.sequence([SKAction.scale(to: 1, duration: 0.25), scoreBlock]))
+        
+    }
+    
+}
+
+// MARK: - Camera
+extension  GameSceneViewHelper {
+    
+    func updateCameraPosition() {
+        guard self.cameraShouldFollowPlayer else { return }
+        guard let cam = self.camera else { return }
+        cam.position = self.player.position
+    }
+    
+    func zoomCameraOnPlayer() {
+        guard let cam = self.camera else { return }
+        let scale = SKAction.scale(to: 0.25, duration: 0.2)
+        let position = SKAction.move(to: self.player.position, duration: 0.2)
+        let slowdown = SKAction.changePlaybackRate(by: 0.25, duration: 1)
+        let runBlock = SKAction.run {
+            self.cameraShouldFollowPlayer = true
+        }
+        cam.run(slowdown)
+        cam.run(scale)
+        let sequence = SKAction.sequence([position, runBlock])
+        cam.run(sequence)
     }
     
 }
