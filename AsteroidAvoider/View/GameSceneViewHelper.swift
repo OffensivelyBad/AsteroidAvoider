@@ -177,8 +177,7 @@ extension GameSceneViewHelper {
         enemySprite.position = candidatePosition!
         enemySprite.zPosition = 1
         enemySprite.setScale(scale)
-        //let spriteSize = max(enemySprite.size.width, enemySprite.size.height)
-        enemySprite.physicsBody = SKPhysicsBody(texture: enemySprite.texture ?? SKTexture(), size: enemySprite.size) // SKPhysicsBody(circleOfRadius: spriteSize * scale)
+        enemySprite.physicsBody = SKPhysicsBody(texture: enemySprite.texture ?? SKTexture(), size: enemySprite.size)
         enemySprite.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
         enemySprite.physicsBody?.collisionBitMask = PhysicsCategory.Player
         enemySprite.physicsBody?.velocity = CGVector(dx: CGFloat(-abs(randomDistribution.nextInt())), dy: 0)
@@ -244,9 +243,6 @@ extension GameSceneViewHelper {
     func playerHit(_ node: SKNode) {
         if node.physicsBody?.categoryBitMask == PhysicsCategory.Enemy && !self.playerWasHit {
             
-            // Stop the music
-            self.musicNode.removeFromParent()
-            
             // Zoom the camera on the player
             zoomCameraOnPlayer()
             
@@ -256,6 +252,10 @@ extension GameSceneViewHelper {
             let velocityAction = SKAction.applyImpulse(velocity, duration: 0.001)
             let playDeathSound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
             let explosion = SKAction.run {
+                
+                // Stop the music
+                self.musicNode.removeFromParent()
+                
                 if let particles = SKEmitterNode(fileNamed: "Explosion.sks") {
                     particles.position = self.player.position
                     particles.zPosition = 2
@@ -276,6 +276,8 @@ extension GameSceneViewHelper {
             self.player.physicsBody?.applyImpulse(velocity)
         }
         else if node.physicsBody?.categoryBitMask == PhysicsCategory.Energy {
+            let playBonusSound = SKAction.playSoundFileNamed("bonus.wav", waitForCompletion: false)
+            self.scene.run(playBonusSound)
             self.score += 1
             node.removeFromParent()
         }
@@ -324,6 +326,14 @@ extension GameSceneViewHelper {
         
     }
     
+    func restartGame() {
+        guard self.playerWasHit else { return }
+        if let scene = GameScene(fileNamed: "GameScene") {
+            scene.scaleMode = .aspectFit
+            self.scene.view?.presentScene(scene)
+        }
+    }
+    
 }
 
 // MARK: - Camera
@@ -339,11 +349,9 @@ extension  GameSceneViewHelper {
         guard let cam = self.camera else { return }
         let scale = SKAction.scale(to: 0.25, duration: 0.2)
         let position = SKAction.move(to: self.player.position, duration: 0.2)
-        let slowdown = SKAction.changePlaybackRate(by: 0.25, duration: 1)
         let runBlock = SKAction.run {
             self.cameraShouldFollowPlayer = true
         }
-        cam.run(slowdown)
         cam.run(scale)
         let sequence = SKAction.sequence([position, runBlock])
         cam.run(sequence)

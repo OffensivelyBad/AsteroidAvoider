@@ -77,6 +77,11 @@ extension GameScene: SKPhysicsContactDelegate {
 // MARK: - Movement and touches
 extension GameScene {
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first, touch.tapCount == 1 else { return }
+        self.viewHelper?.restartGame()
+    }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !self.kMotionControls {
             guard let touch = touches.first else { return }
