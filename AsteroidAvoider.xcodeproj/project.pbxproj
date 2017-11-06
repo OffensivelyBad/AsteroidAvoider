@@ -17,6 +17,12 @@
 		710905961F9E96EC00988557 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 710905941F9E96EC00988557 /* LaunchScreen.storyboard */; };
 		7109059E1FA3BD9D00988557 /* SpaceDust.sks in Resources */ = {isa = PBXBuildFile; fileRef = 7109059D1FA3BD9D00988557 /* SpaceDust.sks */; };
 		710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */; };
+		71894A5A1FA7835400C9C79A /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71894A591FA7835400C9C79A /* PhysicsCategory.swift */; };
+		71D82AB51FB1006A0067F551 /* cyborg-ninja.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 71D82AB41FB1006A0067F551 /* cyborg-ninja.mp3 */; };
+		71D82AB71FB1014A0067F551 /* explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 71D82AB61FB1014A0067F551 /* explosion.wav */; };
+		71D82ABA1FB1108C0067F551 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 71D82AB81FB1108C0067F551 /* Explosion.sks */; };
+		71D82ABB1FB1108C0067F551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71D82AB91FB1108C0067F551 /* Assets.xcassets */; };
+		71D82ABD1FB119B90067F551 /* bonus.wav in Resources */ = {isa = PBXBuildFile; fileRef = 71D82ABC1FB119B90067F551 /* bonus.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +38,12 @@
 		710905971F9E96EC00988557 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7109059D1FA3BD9D00988557 /* SpaceDust.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SpaceDust.sks; sourceTree = "<group>"; };
 		7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneViewHelper.swift; sourceTree = "<group>"; };
+		71894A591FA7835400C9C79A /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
+		71D82AB41FB1006A0067F551 /* cyborg-ninja.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "cyborg-ninja.mp3"; sourceTree = "<group>"; };
+		71D82AB61FB1014A0067F551 /* explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = explosion.wav; sourceTree = "<group>"; };
+		71D82AB81FB1108C0067F551 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
+		71D82AB91FB1108C0067F551 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		71D82ABC1FB119B90067F551 /* bonus.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = bonus.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,12 +76,12 @@
 		710905841F9E96EC00988557 /* AsteroidAvoider */ = {
 			isa = PBXGroup;
 			children = (
+				71D82AB31FB100510067F551 /* Assets */,
 				710905A31FA3C16400988557 /* Model */,
 				710905A21FA3C15C00988557 /* Controller */,
 				710905A11FA3C15600988557 /* View */,
 				710905851F9E96EC00988557 /* AppDelegate.swift */,
 				7109058F1F9E96EC00988557 /* Main.storyboard */,
-				710905921F9E96EC00988557 /* Assets.xcassets */,
 				710905941F9E96EC00988557 /* LaunchScreen.storyboard */,
 				710905971F9E96EC00988557 /* Info.plist */,
 			);
@@ -82,6 +94,8 @@
 				7109059F1FA3C15200988557 /* GameSceneViewHelper.swift */,
 				710905891F9E96EC00988557 /* Actions.sks */,
 				7109059D1FA3BD9D00988557 /* SpaceDust.sks */,
+				71D82AB81FB1108C0067F551 /* Explosion.sks */,
+				71D82AB91FB1108C0067F551 /* Assets.xcassets */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -99,8 +113,20 @@
 			isa = PBXGroup;
 			children = (
 				710905871F9E96EC00988557 /* GameScene.sks */,
+				71894A591FA7835400C9C79A /* PhysicsCategory.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		71D82AB31FB100510067F551 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				710905921F9E96EC00988557 /* Assets.xcassets */,
+				71D82AB41FB1006A0067F551 /* cyborg-ninja.mp3 */,
+				71D82AB61FB1014A0067F551 /* explosion.wav */,
+				71D82ABC1FB119B90067F551 /* bonus.wav */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,10 +190,15 @@
 			files = (
 				710905911F9E96EC00988557 /* Main.storyboard in Resources */,
 				710905881F9E96EC00988557 /* GameScene.sks in Resources */,
+				71D82AB71FB1014A0067F551 /* explosion.wav in Resources */,
 				710905931F9E96EC00988557 /* Assets.xcassets in Resources */,
+				71D82ABD1FB119B90067F551 /* bonus.wav in Resources */,
+				71D82ABB1FB1108C0067F551 /* Assets.xcassets in Resources */,
 				710905961F9E96EC00988557 /* LaunchScreen.storyboard in Resources */,
 				7109059E1FA3BD9D00988557 /* SpaceDust.sks in Resources */,
+				71D82AB51FB1006A0067F551 /* cyborg-ninja.mp3 in Resources */,
 				7109058A1F9E96EC00988557 /* Actions.sks in Resources */,
+				71D82ABA1FB1108C0067F551 /* Explosion.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +211,7 @@
 			files = (
 				7109058C1F9E96EC00988557 /* GameScene.swift in Sources */,
 				7109058E1F9E96EC00988557 /* GameViewController.swift in Sources */,
+				71894A5A1FA7835400C9C79A /* PhysicsCategory.swift in Sources */,
 				710905861F9E96EC00988557 /* AppDelegate.swift in Sources */,
 				710905A01FA3C15200988557 /* GameSceneViewHelper.swift in Sources */,
 			);
@@ -322,6 +354,7 @@
 				DEVELOPMENT_TEAM = EWH85CQYYJ;
 				INFOPLIST_FILE = AsteroidAvoider/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D DEBUG -Xfrontend -warn-long-function-bodies=200 -Xfrontend -warn-long-expression-type-checking=200";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.offensively-bad.AsteroidAvoider";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
